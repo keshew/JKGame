@@ -1,0 +1,138 @@
+import SwiftUI
+
+class ZeusSlotsViewModel: ObservableObject {
+    let contact = ZeusSlotsModel()
+    @Published var slots: [[String]] = []
+    @Published var coin =  1000
+    @Published var bet = 100
+    let allFruits = ["zeus1", "zeus2", "zeus3", "zeus4", "zeus5", "zeus6"]
+    @Published var winningPositions: [(row: Int, col: Int)] = []
+    @Published var isSpinning = false
+    @Published var isStopSpininng = false
+    @Published var isWin = false
+    @Published var win = 0
+    var spinningTimer: Timer?
+    
+    init() {
+        resetSlots()
+    }
+    
+    @Published var betString: String = "10" {
+        didSet {
+            if let newBet = Int(betString), newBet > 0 {
+                bet = newBet
+            }
+        }
+    }
+    let symbolArray = [
+        Symbol(image: "zeus1", value: "100"),
+        Symbol(image: "zeus2", value: "50"),
+        Symbol(image: "zeus3", value: "25"),
+        Symbol(image: "zeus4", value: "15"),
+        Symbol(image: "zeus5", value: "10"),
+        Symbol(image: "zeus6", value: "5")
+    ]
+    
+    func resetSlots() {
+        slots = (0..<3).map { _ in
+            (0..<4).map { _ in
+                allFruits.randomElement()!
+            }
+        }
+    }
+    
+    func spin() {
+        coin -=  bet
+        isSpinning = true
+        spinningTimer?.invalidate()
+        winningPositions.removeAll()
+        win = 0
+        let columns = 4
+        for col in 0..<columns {
+            let delay = Double(col) * 0.4
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                var spinCount = 0
+                let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
+                    for row in 0..<3 {
+                        withAnimation(.spring(response: 0.1, dampingFraction: 1.5, blendDuration: 0)) {
+                            self.slots[row][col] = self.allFruits.randomElement()!
+                        }
+                    }
+                    spinCount += 1
+                    if spinCount > 12 + col * 4 {
+                        timer.invalidate()
+                        if col == columns - 1 {
+                            self.isSpinning = false
+                            self.checkWin()
+                            
+                        }
+                    }
+                }
+                RunLoop.current.add(timer, forMode: .common)
+            }
+        }
+    }
+    
+    
+    func checkWin() {
+        winningPositions = []
+        var totalWin = 0
+        var maxMultiplier = 0
+        let minCounts = [
+            "zeus1": 5,
+            "zeus2": 5,
+            "zeus3": 5,
+            "zeus4": 5,
+            "zeus5": 5,
+            "zeus6": 5
+        ]
+        let multipliers = [
+            "zeus1": 100,
+            "zeus2": 50,
+            "zeus3": 25,
+            "zeus4": 15,
+            "zeus5": 10,
+            "zeus6": 5
+        ]
+        
+        for row in 0..<3 {
+            let rowContent = slots[row]
+            var currentSymbol = rowContent[0]
+            var count = 1
+            for col in 1..<rowContent.count {
+                if rowContent[col] == currentSymbol {
+                    count += 1
+                } else {
+                    if let minCount = minCounts[currentSymbol], count >= minCount {
+                        totalWin += multipliers[currentSymbol] ?? 0
+                        if let multiplierValue = multipliers[currentSymbol], multiplierValue > maxMultiplier {
+                            maxMultiplier = multiplierValue
+                        }
+                        let startCol = col - count
+                        for c in startCol..<col {
+                            winningPositions.append((row: row, col: c))
+                        }
+                    }
+                    currentSymbol = rowContent[col]
+                    count = 1
+                }
+            }
+            if let minCount = minCounts[currentSymbol], count >= minCount {
+                totalWin += multipliers[currentSymbol] ?? 0
+                if let multiplierValue = multipliers[currentSymbol], multiplierValue > maxMultiplier {
+                    maxMultiplier = multiplierValue
+                }
+                let startCol = rowContent.count - count
+                for c in startCol..<rowContent.count {
+                    winningPositions.append((row: row, col: c))
+                }
+            }
+        }
+        
+        if totalWin != 0 {
+            win = totalWin
+            isWin = true
+            coin += totalWin
+        }
+    }
+}
