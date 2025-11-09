@@ -14,7 +14,7 @@ class AviaViewModel: ObservableObject {
     func startGame() {
         guard !isPlaying else { return }
         guard bet <= coin, bet >= 50 else { return }
-        
+
         isPlaying = true
         reward = 0
         let _ = UserDefaultsManager.shared.spendCoins(bet)
@@ -24,26 +24,33 @@ class AviaViewModel: ObservableObject {
         planePositionX = 0
 
         withAnimation(.linear(duration: 3)) {
-            planeRotation = 45
             planePositionX = 150
         }
 
         startRewardIncrement()
 
         fallWorkItem?.cancel()
-        let workItem = DispatchWorkItem { [weak self] in
+
+        let fallItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
             self.stopRewardIncrement()
+
             withAnimation(.linear(duration: 2)) {
-                self.planeRotation = 90
+                self.planeRotation = 45
                 self.planePositionX = 300
             }
-            self.reward = 0
-            self.isPlaying = false
-            self.resetPlanePosition()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.reward = 0
+                self.isPlaying = false
+                self.resetPlanePosition()
+            }
         }
-        fallWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
+        fallWorkItem = fallItem
+
+        let randomDelay = Double.random(in: 1.0...5.0)
+        DispatchQueue.main.asyncAfter(deadline: .now() + randomDelay, execute: fallItem)
+
     }
 
     func collectReward() {

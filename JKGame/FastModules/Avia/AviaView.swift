@@ -78,10 +78,9 @@ struct AviaView: View {
                 HStack {
                     Image(.plane)
                         .resizable()
-                              .frame(width: 117, height: 40)
-//                              .rotationEffect(.degrees(viewModel.planeRotation))
-                              .offset(x: viewModel.planePositionX)
-                              .animation(.linear(duration: 5), value: viewModel.planeRotation)
+                        .frame(width: 117, height: 40)
+                        .offset(x: viewModel.planePositionX)
+                        .rotationEffect(Angle(degrees: viewModel.planeRotation))
                     
                     Spacer()
                 }
