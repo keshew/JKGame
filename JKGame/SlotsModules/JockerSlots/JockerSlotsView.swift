@@ -22,6 +22,7 @@ struct JockerSlotsView: View {
                                 .stroke(Color.white.opacity(0.6))
                                 .overlay {
                                     Button(action: {
+                                        NotificationCenter.default.post(name: Notification.Name("UserResourcesUpdated"), object: nil)
                                         presentationMode.wrappedValue.dismiss()
                                     }) {
                                         Image(.home)
@@ -168,6 +169,8 @@ struct JockerSlotsView: View {
                                     .scaleEffect(x: -1)
                                     .frame(width: 32, height: 43)
                             }
+                            .opacity(viewModel.bet <= 100 ? 0.5 : 1)
+                            .disabled(viewModel.bet <= 100 ? true : false)
                             
                             Rectangle()
                                 .fill(LinearGradient(colors: [Color(red: 222/255, green: 1/255, blue: 1/255).opacity(0.5),

@@ -9,7 +9,7 @@ struct Symbol: Identifiable {
 class JockerSlotsViewModel: ObservableObject {
     let contact = JockerSlotsModel()
     @Published var slots: [[String]] = []
-    @Published var coin =  1000
+    @Published var coin =  UserDefaultsManager.shared.coins
     @Published var bet = 100
     let allFruits = ["jocker1", "jocker2", "jocker3", "jocker4", "jocker5", "jocker6"]
     @Published var winningPositions: [(row: Int, col: Int)] = []
@@ -48,7 +48,8 @@ class JockerSlotsViewModel: ObservableObject {
     }
     
     func spin() {
-        coin -=  bet
+        let _ = UserDefaultsManager.shared.spendCoins(bet)
+        coin = UserDefaultsManager.shared.coins
         isSpinning = true
         spinningTimer?.invalidate()
         winningPositions.removeAll()
@@ -85,12 +86,12 @@ class JockerSlotsViewModel: ObservableObject {
         var totalWin = 0
         var maxMultiplier = 0
         let minCounts = [
-            "jocker1": 5,
-            "jocker2": 5,
-            "jocker3": 5,
-            "jocker4": 5,
-            "jocker5": 5,
-            "jocker6": 5
+            "jocker1": 4,
+            "jocker2": 4,
+            "jocker3": 4,
+            "jocker4": 4,
+            "jocker5": 4,
+            "jocker6": 4
         ]
         let multipliers = [
             "jocker1": 100,
@@ -138,7 +139,8 @@ class JockerSlotsViewModel: ObservableObject {
         if totalWin != 0 {
             win = totalWin
             isWin = true
-            coin += totalWin
+            UserDefaultsManager.shared.addCoins(totalWin)
+            coin = UserDefaultsManager.shared.coins
         }
     }
 }

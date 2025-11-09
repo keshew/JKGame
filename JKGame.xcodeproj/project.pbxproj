@@ -48,6 +48,11 @@
 			path = JKGame;
 			sourceTree = "<group>";
 		};
+		86AC90642EC0CD77002861F2 /* UserDefaults */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = UserDefaults;
+			sourceTree = "<group>";
+		};
 		86F7AC902EBF3E8800230029 /* JKGameTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = JKGameTests;
@@ -88,6 +93,7 @@
 		86F7AC742EBF3E8600230029 = {
 			isa = PBXGroup;
 			children = (
+				86AC90642EC0CD77002861F2 /* UserDefaults */,
 				86F7AC902EBF3E8800230029 /* JKGameTests */,
 				86F7AC9A2EBF3E8800230029 /* JKGameUITests */,
 				86F7AC7E2EBF3E8600230029 /* Products */,
@@ -122,6 +128,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				865B35942EBFDD4F00453C8F /* JKGame */,
+				86AC90642EC0CD77002861F2 /* UserDefaults */,
 			);
 			name = JKGame;
 			packageProductDependencies = (

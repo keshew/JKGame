@@ -5,6 +5,10 @@ struct FastGamesView: View {
     @State var currentIndex = 1
     @State var showAlert = false
     @Environment(\.presentationMode) var presentationMode
+    @State var isAvia = false
+    @State var isPlinko = false
+    @State var isLucky = false
+    @State var coins = UserDefaultsManager.shared.coins
     
     var body: some View {
         ZStack {
@@ -29,6 +33,7 @@ struct FastGamesView: View {
                                 .stroke(Color.white.opacity(0.6))
                                 .overlay {
                                     Button(action: {
+                                        NotificationCenter.default.post(name: Notification.Name("UserResourcesUpdated"), object: nil)
                                         presentationMode.wrappedValue.dismiss()
                                     }) {
                                         Image(.home)
@@ -77,7 +82,7 @@ struct FastGamesView: View {
                                         .resizable()
                                         .frame(width: 33, height: 34)
                                     
-                                    Text("2000")
+                                    Text("\(coins)")
                                         .font(.system(size: 16, weight: .black))
                                         .foregroundStyle(.white)
                                 }
@@ -131,7 +136,13 @@ struct FastGamesView: View {
                             .disabled(currentIndex >= 2 ? false : true)
                             
                             Button(action: {
-                                
+                                switch currentIndex {
+                                case 1: isAvia = true
+                                case 2: isPlinko = true
+                                case 3: isLucky = true
+                                default:
+                                    isAvia = true
+                                }
                             }) {
                                 Image(.playBtn)
                                     .resizable()
@@ -160,6 +171,20 @@ struct FastGamesView: View {
                 Spacer()
             }
             .padding(.top)
+        }
+        .onAppear() {
+            NotificationCenter.default.addObserver(forName: Notification.Name("UserResourcesUpdated"), object: nil, queue: .main) { _ in
+                coins = UserDefaultsManager.shared.coins
+            }
+        }
+        .fullScreenCover(isPresented: $isAvia) {
+            AviaView()
+        }
+        .fullScreenCover(isPresented: $isPlinko) {
+            PlinkoView()
+        }
+        .fullScreenCover(isPresented: $isLucky) {
+            LuckyView()
         }
     }
 }

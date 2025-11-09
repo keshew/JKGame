@@ -21,7 +21,7 @@ struct RewardsView: View {
                         .resizable()
                         .overlay {
                             VStack(spacing: 10) {
-                                ForEach(array, id: \.id) { item in
+                                ForEach(rewardsModel.rewards) { item in
                                     Rectangle()
                                         .fill(LinearGradient(colors: item.isDone ? [Color(red: 222/255, green: 1/255, blue: 1/255).opacity(0.5),
                                                                                     Color(red: 159/255, green: 25/255, blue: 25/255).opacity(0.5),
@@ -51,7 +51,7 @@ struct RewardsView: View {
                                                         Spacer()
                                                         
                                                         Button(action: {
-                                                            
+                                                            rewardsModel.receiveReward(day: item.number)
                                                         }) {
                                                             Rectangle()
                                                                 .fill(LinearGradient(colors: item.isDone ? [Color(red: 222/255, green: 1/255, blue: 1/255).opacity(0.5),
@@ -90,7 +90,7 @@ struct RewardsView: View {
                                                                 .frame(width: 83, height: 43)
                                                                 .cornerRadius(17)
                                                         }
-                                                        .disabled(!item.isDone || item.isGot)
+                                                        .disabled(!item.isDone || item.isGot || !rewardsModel.canReceive(day: item.number))
                                                     }
                                                     .padding(.horizontal)
                                                 }
@@ -130,4 +130,5 @@ struct RewardsView: View {
 #Preview {
     RewardsView(isReward: .constant(false))
 }
+
 

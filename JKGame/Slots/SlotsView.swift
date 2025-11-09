@@ -5,7 +5,11 @@ struct SlotsView: View {
     @State var currentIndex = 1
     @State var showAlert = false
     @Environment(\.presentationMode) var presentationMode
-    
+    @State var isJocker = false
+    @State var isEgypt = false
+    @State var isZeus = false
+    @State var isLepre = false
+    @State var coins = UserDefaultsManager.shared.coins
     var body: some View {
         ZStack {
             ZStack {
@@ -29,6 +33,7 @@ struct SlotsView: View {
                                 .stroke(Color.white.opacity(0.6))
                                 .overlay {
                                     Button(action: {
+                                        NotificationCenter.default.post(name: Notification.Name("UserResourcesUpdated"), object: nil)
                                         presentationMode.wrappedValue.dismiss()
                                     }) {
                                         Image(.home)
@@ -77,7 +82,7 @@ struct SlotsView: View {
                                         .resizable()
                                         .frame(width: 33, height: 34)
                                     
-                                    Text("2000")
+                                    Text("\(coins)")
                                         .font(.system(size: 16, weight: .black))
                                         .foregroundStyle(.white)
                                 }
@@ -131,7 +136,14 @@ struct SlotsView: View {
                             .disabled(currentIndex >= 2 ? false : true)
                             
                             Button(action: {
-                                
+                                switch currentIndex {
+                                case 1: isJocker = true
+                                case 2: isEgypt = true
+                                case 3: isZeus = true
+                                case 4: isLepre = true
+                                default:
+                                    isJocker = true
+                                }
                             }) {
                                 Image(.playBtn)
                                     .resizable()
@@ -160,6 +172,23 @@ struct SlotsView: View {
                 Spacer()
             }
             .padding(.top)
+        }
+        .onAppear() {
+            NotificationCenter.default.addObserver(forName: Notification.Name("UserResourcesUpdated"), object: nil, queue: .main) { _ in
+                coins = UserDefaultsManager.shared.coins
+            }
+        }
+        .fullScreenCover(isPresented: $isZeus) {
+            ZeusSlotsView()
+        }
+        .fullScreenCover(isPresented: $isEgypt) {
+            EgyptSlotsView()
+        }
+        .fullScreenCover(isPresented: $isLepre) {
+            LepreSlotsView()
+        }
+        .fullScreenCover(isPresented: $isJocker) {
+            JockerSlotsView()
         }
     }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OnbView: View {
     @StateObject var onbModel =  OnbViewModel()
-
+    @State var isMenu = false
     var body: some View {
         ZStack {
             Image(.bgOnb)
@@ -17,7 +17,7 @@ struct OnbView: View {
                     .multilineTextAlignment(.center)
                 
                 Button(action:{
-                    
+                    isMenu = true
                 }) {
                     Image(.start)
                         .resizable()
@@ -26,6 +26,9 @@ struct OnbView: View {
                 }
                 .padding(.bottom, 49)
             }
+        }
+        .fullScreenCover(isPresented: $isMenu) {
+            MainView()
         }
     }
 }

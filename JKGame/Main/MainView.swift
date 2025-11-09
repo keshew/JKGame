@@ -6,6 +6,7 @@ struct MainView: View {
     @State var isSlots = false
     @State var isFast = false
     @State var isRewards = false
+    @State var coins = UserDefaultsManager.shared.coins
     
     var body: some View {
         ZStack {
@@ -85,7 +86,7 @@ struct MainView: View {
                                                                 .resizable()
                                                                 .frame(width: 23, height: 27)
                                                             
-                                                            Text("2000")
+                                                            Text("\(coins)")
                                                                 .font(.system(size: 16, weight: .black))
                                                                 .foregroundStyle(.white)
                                                         }
@@ -167,6 +168,11 @@ struct MainView: View {
             if isRewards {
                 RewardsView(isReward: $isRewards)
                     .ignoresSafeArea()
+            }
+        }
+        .onAppear() {
+            NotificationCenter.default.addObserver(forName: Notification.Name("UserResourcesUpdated"), object: nil, queue: .main) { _ in
+                coins = UserDefaultsManager.shared.coins
             }
         }
         .fullScreenCover(isPresented: $isSlots) {

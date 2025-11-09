@@ -22,6 +22,7 @@ struct ZeusSlotsView: View {
                                 .stroke(Color.white.opacity(0.6))
                                 .overlay {
                                     Button(action: {
+                                        NotificationCenter.default.post(name: Notification.Name("UserResourcesUpdated"), object: nil)
                                         presentationMode.wrappedValue.dismiss()
                                     }) {
                                         Image(.home)
@@ -111,14 +112,14 @@ struct ZeusSlotsView: View {
                                                         Rectangle()
                                                             .fill(
                                                                 LinearGradient(
-                                                                    colors: [Color.black.opacity(0.2)],
+                                                                    colors: [Color(red: 203/255, green: 200/255, blue: 176/255)],
                                                                     startPoint: .topLeading,
                                                                     endPoint: .bottomTrailing
                                                                 )
                                                             )
                                                             .overlay {
                                                                 RoundedRectangle(cornerRadius: 14)
-                                                                    .stroke(Color.white.opacity(0.3), lineWidth: 3)
+                                                                    .stroke(Color(red: 228/255, green: 202/255, blue: 100/255), lineWidth: 3)
                                                                     .overlay(
                                                                         Image(viewModel.slots[row][col])
                                                                             .resizable()
@@ -154,6 +155,8 @@ struct ZeusSlotsView: View {
                                     .scaleEffect(x: -1)
                                     .frame(width: 32, height: 43)
                             }
+                            .opacity(viewModel.bet <= 100 ? 0.5 : 1)
+                            .disabled(viewModel.bet <= 100 ? true : false)
                             
                             Image(.zeusBtnBg)
                                 .resizable()

@@ -3,7 +3,7 @@ import SwiftUI
 class ZeusSlotsViewModel: ObservableObject {
     let contact = ZeusSlotsModel()
     @Published var slots: [[String]] = []
-    @Published var coin =  1000
+    @Published var coin =  UserDefaultsManager.shared.coins
     @Published var bet = 100
     let allFruits = ["zeus1", "zeus2", "zeus3", "zeus4", "zeus5", "zeus6"]
     @Published var winningPositions: [(row: Int, col: Int)] = []
@@ -42,7 +42,8 @@ class ZeusSlotsViewModel: ObservableObject {
     }
     
     func spin() {
-        coin -=  bet
+        let _ = UserDefaultsManager.shared.spendCoins(bet)
+        coin = UserDefaultsManager.shared.coins
         isSpinning = true
         spinningTimer?.invalidate()
         winningPositions.removeAll()
@@ -79,12 +80,12 @@ class ZeusSlotsViewModel: ObservableObject {
         var totalWin = 0
         var maxMultiplier = 0
         let minCounts = [
-            "zeus1": 5,
-            "zeus2": 5,
-            "zeus3": 5,
-            "zeus4": 5,
-            "zeus5": 5,
-            "zeus6": 5
+            "zeus1": 4,
+            "zeus2": 4,
+            "zeus3": 4,
+            "zeus4": 4,
+            "zeus5": 4,
+            "zeus6": 4
         ]
         let multipliers = [
             "zeus1": 100,
@@ -132,7 +133,8 @@ class ZeusSlotsViewModel: ObservableObject {
         if totalWin != 0 {
             win = totalWin
             isWin = true
-            coin += totalWin
+            UserDefaultsManager.shared.addCoins(totalWin)
+            coin = UserDefaultsManager.shared.coins
         }
     }
 }
