@@ -3,6 +3,8 @@ import SwiftUI
 struct OnbView: View {
     @StateObject var onbModel =  OnbViewModel()
     @State var isMenu = false
+    @ObservedObject private var soundManager = SoundManager.shared
+    
     var body: some View {
         ZStack {
             Image(.bgOnb)

@@ -12,6 +12,7 @@ class ZeusSlotsViewModel: ObservableObject {
     @Published var isWin = false
     @Published var win = 0
     var spinningTimer: Timer?
+    @ObservedObject private var soundManager = SoundManager.shared
     
     init() {
         resetSlots()
@@ -44,6 +45,7 @@ class ZeusSlotsViewModel: ObservableObject {
     func spin() {
         let _ = UserDefaultsManager.shared.spendCoins(bet)
         coin = UserDefaultsManager.shared.coins
+        soundManager.playSlot1()
         isSpinning = true
         spinningTimer?.invalidate()
         winningPositions.removeAll()
@@ -64,6 +66,7 @@ class ZeusSlotsViewModel: ObservableObject {
                         timer.invalidate()
                         if col == columns - 1 {
                             self.isSpinning = false
+                            self.soundManager.stopSlot()
                             self.checkWin()
                             
                         }

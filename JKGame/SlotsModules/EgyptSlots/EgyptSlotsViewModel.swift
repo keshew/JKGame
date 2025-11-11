@@ -10,6 +10,7 @@ class EgyptSlotsViewModel: ObservableObject {
     @Published var isStopSpininng = false
     @Published var isWin = false
     @Published var win = 0
+    @ObservedObject private var soundManager = SoundManager.shared
     var spinningTimer: Timer?
     
     init() {
@@ -45,6 +46,7 @@ class EgyptSlotsViewModel: ObservableObject {
         coin = UserDefaultsManager.shared.coins
         isSpinning = true
         spinningTimer?.invalidate()
+        soundManager.playSlot1()
         winningPositions.removeAll()
         win = 0
         let columns = 5
@@ -63,6 +65,7 @@ class EgyptSlotsViewModel: ObservableObject {
                         timer.invalidate()
                         if col == columns - 1 {
                             self.isSpinning = false
+                            self.soundManager.stopSlot()
                             self.checkWin()
                             
                         }

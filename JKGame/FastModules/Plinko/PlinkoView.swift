@@ -161,14 +161,14 @@ class GameSpriteKit: SKScene, SKPhysicsContactDelegate {
     func createObstacles() {
         let startRowCount = 2
         let numberOfRows = 9
-        let obstacleSize = CGSize(width: 10, height: 20)
-        let horizontalSpacing: CGFloat = 25
+        let obstacleSize = CGSize(width: size.width > 700 ? 20 : 10, height: size.width > 700 ? 30 : 20)
+        let horizontalSpacing: CGFloat = size.width > 700 ? 50 : 25
         
         for row in 0..<numberOfRows {
             let countInRow = startRowCount + row
             let totalWidth = CGFloat(countInRow) * (obstacleSize.width + horizontalSpacing) - horizontalSpacing
             let xOffset = (size.width - totalWidth) / 2 + obstacleSize.width / 2
-            let yPosition = size.height / 1.2 - CGFloat(row) * (obstacleSize.height + (UIScreen.main.bounds.size.height > 1000 ? 50 : UIScreen.main.bounds.size.height > 800 ? 30 : UIScreen.main.bounds.size.height > 730 ? 35 : UIScreen.main.bounds.height > 430 ? 16 : 13))
+            let yPosition = size.height / 1.2 - CGFloat(row) * (obstacleSize.height + (UIScreen.main.bounds.size.height > 1000 ? 90 : UIScreen.main.bounds.size.height > 800 ? 30 : UIScreen.main.bounds.size.height > 730 ? 35 : UIScreen.main.bounds.height > 430 ? 16 : 13))
             
             for col in 0..<countInRow {
                 let obstacle = SKSpriteNode(imageNamed: "obstacle")
@@ -190,21 +190,21 @@ class GameSpriteKit: SKScene, SKPhysicsContactDelegate {
         guard let game = self.game else { return }
         let labels = game.labels
         let count = labels.count
-        let ticketWidth: CGFloat = 20
+        let ticketWidth: CGFloat = size.width > 700 ? 70 : 20
         let horizontalSpacing: CGFloat = 15
         let totalWidth = CGFloat(count) * (ticketWidth + horizontalSpacing) - horizontalSpacing
         let xOffset = (size.width - totalWidth) / 2 + ticketWidth / 2
-        let yPosition = size.height / 3.5
+        let yPosition = size.width > 700 ? size.height / 20 : size.height / 3.5
         let colors: [UIColor] = [UIColor(red: 126/255, green: 171/255, blue: 233/255, alpha: 1), .white, UIColor(red: 1/255, green: 120/255, blue: 224/255, alpha: 1), UIColor(red: 222/255, green: 76/255, blue: 144/255, alpha: 1), .yellow, .yellow, UIColor(red: 222/255, green: 76/255, blue: 144/255, alpha: 1), UIColor(red: 1/255, green: 120/255, blue: 224/255, alpha: 1), .white, UIColor(red: 126/255, green: 171/255, blue: 233/255, alpha: 1)]
         for i in 0..<count {
             let label = SKLabelNode(text: labels[i])
             label.fontName = "Helvetica-Bold"
-            label.fontSize = 19
+            label.fontSize = size.width > 700 ? 34 : 19
             label.fontColor = colors[i]
             label.verticalAlignmentMode = .center
             label.horizontalAlignmentMode = .center
             label.position = CGPoint(x: xOffset + CGFloat(i) * (ticketWidth + horizontalSpacing), y: yPosition)
-            label.xScale = 0.5
+            label.xScale = size.width > 700 ? 1 : 0.5
             label.yScale = 1
             
             label.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: ticketWidth, height: label.frame.height))

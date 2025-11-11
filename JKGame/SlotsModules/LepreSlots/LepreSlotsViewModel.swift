@@ -11,7 +11,7 @@ class LepreSlotsViewModel: ObservableObject {
     @Published var isWin = false
     @Published var win = 0
     var spinningTimer: Timer?
-    
+    @ObservedObject private var soundManager = SoundManager.shared
     init() {
         resetSlots()
     }
@@ -44,6 +44,7 @@ class LepreSlotsViewModel: ObservableObject {
         let _ = UserDefaultsManager.shared.spendCoins(bet)
         coin = UserDefaultsManager.shared.coins
         isSpinning = true
+        soundManager.playSlot1()
         spinningTimer?.invalidate()
         winningPositions.removeAll()
         win = 0
@@ -63,6 +64,7 @@ class LepreSlotsViewModel: ObservableObject {
                         timer.invalidate()
                         if col == columns - 1 {
                             self.isSpinning = false
+                            self.soundManager.stopSlot()
                             self.checkWin()
                             
                         }

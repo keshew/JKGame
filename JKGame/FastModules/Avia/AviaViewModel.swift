@@ -7,14 +7,15 @@ class AviaViewModel: ObservableObject {
     @Published var isPlaying: Bool = false
     @Published var planeRotation: Double = 0
     @Published var planePositionX: CGFloat = 0
-
+    @ObservedObject private var soundManager = SoundManager.shared
+    
     private var fallWorkItem: DispatchWorkItem?
     private var rewardTimer: Timer?
     
     func startGame() {
         guard !isPlaying else { return }
         guard bet <= coin, bet >= 50 else { return }
-
+        soundManager.playWrong()
         isPlaying = true
         reward = 0
         let _ = UserDefaultsManager.shared.spendCoins(bet)
@@ -44,6 +45,7 @@ class AviaViewModel: ObservableObject {
                 self.reward = 0
                 self.isPlaying = false
                 self.resetPlanePosition()
+                self.soundManager.stopWrong()
             }
         }
         fallWorkItem = fallItem
@@ -55,6 +57,7 @@ class AviaViewModel: ObservableObject {
 
     func collectReward() {
         guard isPlaying else { return }
+        self.soundManager.stopWrong()
         stopRewardIncrement()
         UserDefaultsManager.shared.addCoins(reward)
         coin = UserDefaultsManager.shared.coins
